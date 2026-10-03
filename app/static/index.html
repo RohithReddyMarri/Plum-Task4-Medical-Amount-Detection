@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plum | AI Medical Bill Amount Detector</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo-area">
+            <span class="brand-pill">Plum Health</span>
+            <h1>AI Medical Bill Amount Detector</h1>
+            <span class="badge">Problem Statement 4</span>
+        </div>
+        <div class="nav-links">
+            <a href="/docs" target="_blank" class="nav-btn">Swagger API Docs</a>
+            <a href="/redoc" target="_blank" class="nav-btn">ReDoc</a>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Input Section -->
+        <section class="card input-card">
+            <div class="card-header">
+                <h2>1. Input Document</h2>
+                <div class="sample-pills">
+                    <span class="pill-label">Load Samples:</span>
+                    <button class="pill-btn" onclick="loadSample(1)">Sample 1 (Standard)</button>
+                    <button class="pill-btn" onclick="loadSample(2)">Sample 2 (Noisy OCR)</button>
+                    <button class="pill-btn" onclick="loadSample(3)">Sample 3 (Multi-item Bill)</button>
+                    <button class="pill-btn" onclick="loadSample(4)">Sample 4 (Guardrail Trigger)</button>
+                </div>
+            </div>
+
+            <div class="tabs">
+                <button class="tab-btn active" id="tab-text" onclick="switchTab('text')">Text / OCR String</button>
+                <button class="tab-btn" id="tab-file" onclick="switchTab('file')">Upload Bill Image (OCR)</button>
+            </div>
+
+            <div id="text-input-panel" class="tab-panel active">
+                <textarea id="raw-text-input" rows="4" placeholder="Enter typed bill text or noisy OCR string here... (e.g. Total: INR 1200 | Paid: 1000 | Due: 200 | Discount: 10%)"></textarea>
+            </div>
+
+            <div id="file-input-panel" class="tab-panel">
+                <div class="upload-dropzone" id="dropzone" onclick="document.getElementById('file-input').click()">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    <p id="dropzone-text">Click or drag & drop a medical bill image (PNG, JPG, JPEG)</p>
+                    <input type="file" id="file-input" accept="image/*" style="display:none" onchange="handleFileSelected(event)">
+                </div>
+                <div id="image-preview-container" style="display:none;">
+                    <img id="image-preview" src="" alt="Bill Preview">
+                    <button class="btn-secondary" onclick="clearImage()">Remove Image</button>
+                </div>
+            </div>
+
+            <div class="action-bar">
+                <button class="btn-primary" id="run-btn" onclick="runPipeline()">
+                    <span id="btn-spinner" class="spinner" style="display:none;"></span>
+                    <span>Run AI Pipeline</span>
+                </button>
+                <button class="btn-outline" onclick="clearAll()">Reset</button>
+            </div>
+        </section>
+
+        <!-- Pipeline Execution Flow -->
+        <section class="pipeline-section">
+            <h2 class="section-title">2. Step-by-Step AI Execution Pipeline</h2>
+            
+            <div class="pipeline-grid">
+                <!-- Step 1 -->
+                <div class="step-card" id="card-step1">
+                    <div class="step-badge">Step 1</div>
+                    <h3>OCR / Token Extraction</h3>
+                    <p class="step-desc">Extract raw candidate numeric tokens and currency hint.</p>
+                    <div class="step-output" id="output-step1">
+                        <span class="placeholder-text">Awaiting pipeline run...</span>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="step-card" id="card-step2">
+                    <div class="step-badge">Step 2</div>
+                    <h3>Numeric Normalization</h3>
+                    <p class="step-desc">Fix OCR digit errors (e.g. l200 &rarr; 1200) & drop rates.</p>
+                    <div class="step-output" id="output-step2">
+                        <span class="placeholder-text">Awaiting pipeline run...</span>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="step-card" id="card-step3">
+                    <div class="step-badge">Step 3</div>
+                    <h3>Context Classification</h3>
+                    <p class="step-desc">Label financial roles (total_bill, paid, due, discount).</p>
+                    <div class="step-output" id="output-step3">
+                        <span class="placeholder-text">Awaiting pipeline run...</span>
+                    </div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="step-card step-final" id="card-step4">
+                    <div class="step-badge step-badge-final">Step 4 (Final)</div>
+                    <h3>Standardized Output + Provenance</h3>
+                    <p class="step-desc">Standard schema with audit trail & math reconciliation.</p>
+                    <div class="step-output" id="output-step4">
+                        <span class="placeholder-text">Awaiting pipeline run...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Guardrails & Audit Banner -->
+            <div id="guardrail-banner" class="guardrail-box" style="display:none;">
+                <div class="guardrail-icon" id="guardrail-icon">🛡️</div>
+                <div class="guardrail-content">
+                    <h4 id="guardrail-title">Guardrail Status</h4>
+                    <p id="guardrail-desc">Evaluations appear here.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Plum SDE Intern Assignment &bull; Built with FastAPI, RapidOCR, and Pydantic &bull; Problem Statement 4</p>
+    </footer>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

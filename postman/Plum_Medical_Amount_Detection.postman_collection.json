@@ -1,0 +1,176 @@
+{
+  "info": {
+    "name": "Plum SDE Intern - Medical Amount Detection API",
+    "_postman_id": "plum-medical-amount-detection",
+    "description": "API collection for Problem Statement 4: AI-Powered Amount Detection in Medical Documents.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["health"]
+        }
+      }
+    },
+    {
+      "name": "Process Bill (Standard Text Input)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"text\": \"Total: INR 1200 | Paid: 1000 | Due: 200 | Discount: 10%\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/process",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "process"]
+        }
+      }
+    },
+    {
+      "name": "Process Bill (Noisy OCR Sample with Digit Confusion)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"text\": \"T0tal: Rs l200 | Pald: 1000 | Due: 200\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/process",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "process"]
+        }
+      }
+    },
+    {
+      "name": "Process Bill (Image Upload via Multipart)",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": "samples/sample_receipt_standard.png"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/process",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "process"]
+        }
+      }
+    },
+    {
+      "name": "Noisy Document Guardrail Trigger",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"text\": \"--- blurred smudge !!! @#$$%^ unreadable\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/process",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "process"]
+        }
+      }
+    },
+    {
+      "name": "Full Pipeline Trace (Steps 1 to 4)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"text\": \"T0tal: Rs l200 | Pald: 1000 | Due: 200\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/pipeline",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "pipeline"]
+        }
+      }
+    },
+    {
+      "name": "Step 1: OCR / Token Extraction",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"text\": \"Total: INR 1200 | Paid: 1000 | Due: 200 | Discount: 10%\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/step1-ocr",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "step1-ocr"]
+        }
+      }
+    },
+    {
+      "name": "Step 2: Numeric Normalization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "[\"l200\", \"1000\", \"200\", \"10%\"]"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/step2-normalize",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "step2-normalize"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000"
+    }
+  ]
+}

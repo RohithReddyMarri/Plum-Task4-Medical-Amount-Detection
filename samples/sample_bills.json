@@ -1,0 +1,47 @@
+{
+  "test_cases": [
+    {
+      "name": "Standard Typed Text Input",
+      "input_type": "text",
+      "input": "Total: INR 1200 | Paid: 1000 | Due: 200 | Discount: 10%",
+      "expected_currency": "INR",
+      "expected_amounts": [
+        {"type": "total_bill", "value": 1200},
+        {"type": "paid", "value": 1000},
+        {"type": "due", "value": 200}
+      ],
+      "status": "ok"
+    },
+    {
+      "name": "Noisy OCR Sample with Digit Confusion (l200 -> 1200)",
+      "input_type": "text",
+      "input": "T0tal: Rs l200 | Pald: 1000 | Due: 200",
+      "expected_currency": "INR",
+      "expected_amounts": [
+        {"type": "total_bill", "value": 1200},
+        {"type": "paid", "value": 1000},
+        {"type": "due", "value": 200}
+      ],
+      "status": "ok"
+    },
+    {
+      "name": "Multi-item Inpatient Hospital Bill",
+      "input_type": "text",
+      "input": "Hospital Invoice: Room charges INR 5000 | Medicine: INR 2500 | Total: INR 7500 | Amount Paid: 6000 | Balance Due: 1500",
+      "expected_currency": "INR",
+      "expected_amounts": [
+        {"type": "total_bill", "value": 7500},
+        {"type": "paid", "value": 6000},
+        {"type": "due", "value": 1500}
+      ],
+      "status": "ok"
+    },
+    {
+      "name": "Noisy Document Guardrail Trigger",
+      "input_type": "text",
+      "input": "--- ??? !!! blurred smudge @#$%",
+      "expected_status": "no_amounts_found",
+      "expected_reason": "document too noisy"
+    }
+  ]
+}
