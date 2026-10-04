@@ -9,7 +9,6 @@ def create_receipt_image(text_lines, filename, add_noise=False, heavy_noise=Fals
     img = Image.new("RGB", (width, height), color=(250, 250, 245))
     draw = ImageDraw.Draw(img)
 
-    # Use default PIL font or fallback
     try:
         font = ImageFont.load_default()
     except Exception:
@@ -21,7 +20,6 @@ def create_receipt_image(text_lines, filename, add_noise=False, heavy_noise=Fals
         y_offset += 35
 
     if add_noise:
-        # Add slight artifacts / dots
         for _ in range(500):
             x = random.randint(0, width - 1)
             y = random.randint(0, height - 1)
@@ -29,7 +27,6 @@ def create_receipt_image(text_lines, filename, add_noise=False, heavy_noise=Fals
         img = img.filter(ImageFilter.SMOOTH_MORE)
 
     if heavy_noise:
-        # Completely obscure / blur
         for _ in range(3000):
             x = random.randint(0, width - 1)
             y = random.randint(0, height - 1)
@@ -44,7 +41,7 @@ if __name__ == "__main__":
     # Sample 1: Standard clean receipt
     create_receipt_image(
         [
-            "PLUM HEALTHCARE CLINIC",
+            "APEX HEALTHCARE CLINIC",
             "-------------------------",
             "Consultation & Diagnostic",
             "Total: INR 1200",
@@ -58,7 +55,7 @@ if __name__ == "__main__":
     # Sample 2: Noisy OCR receipt with digit artifacts
     create_receipt_image(
         [
-            "PLUM MEDICAL CENTER",
+            "METRO MEDICAL CENTER",
             "-------------------------",
             "T0tal: Rs l200",
             "Pald: 1000",

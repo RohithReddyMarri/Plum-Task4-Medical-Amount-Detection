@@ -85,7 +85,7 @@ def test_noisy_document_guardrail():
 
 
 def test_end_to_end_noisy_ocr_sample():
-    # Exact noisy sample from assignment PDF: T0tal: Rs l200 | Pald: 1000 | Due: 200
+    # Noisy OCR sample with digit confusion: T0tal: Rs l200 | Pald: 1000 | Due: 200
     noisy_text = "T0tal: Rs l200 | Pald: 1000 | Due: 200"
     result = PipelineCoordinator.run_full_pipeline(text=noisy_text)
 

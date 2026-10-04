@@ -13,10 +13,10 @@ app = FastAPI(
     title=settings.PROJECT_NAME,
     version=settings.VERSION,
     description="""
-## Plum SDE Intern Assignment - Problem Statement 4
-### AI-Powered Amount Detection in Medical Documents
+## MediExtract AI
+### Intelligent Medical Bill & Receipt Financial Extractor
 
-This service provides an intelligent multi-step pipeline for parsing financial amounts from medical bills and receipts:
+A production-grade pipeline designed to parse financial amounts, line items, and payment summaries from medical invoices and pharmacy receipts:
 1. **Step 1 - OCR & Token Extraction**: Ingests typed text or noisy receipt images, extracting numeric tokens and inferring currency.
 2. **Step 2 - Normalization**: Corrects OCR character/digit confusion matrix errors (`l` -> `1`, `O` -> `0`, etc.) and filters non-amounts.
 3. **Step 3 - Classification by Context**: Contextually labels amounts into `total_bill`, `paid`, `due`, `discount`, and `tax`.
@@ -49,7 +49,7 @@ async def serve_home():
     index_file = BASE_DIR / "static" / "index.html"
     if index_file.exists():
         return FileResponse(index_file)
-    return {"message": "Plum Medical Amount Detection API is active. Visit /docs for documentation."}
+    return {"message": "MediExtract AI Service is active. Visit /docs for API documentation."}
 
 @app.get("/health", tags=["Health"])
 async def health_check():

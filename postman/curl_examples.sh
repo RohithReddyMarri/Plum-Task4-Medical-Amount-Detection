@@ -1,5 +1,5 @@
 #!/bin/bash
-# Sample cURL requests for testing Plum Medical Amount Detection API
+# Sample cURL requests for testing MediExtract AI API
 
 BASE_URL="http://localhost:8000"
 

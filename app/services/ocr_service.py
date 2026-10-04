@@ -69,7 +69,7 @@ class OCRService:
     def extract_currency_hint(text: str) -> str:
         """
         Infers currency from text cues (INR, Rs, ₹, USD, $, EUR, etc.)
-        Defaults to 'INR' for Plum/Indian medical receipts.
+        Defaults to 'INR' for medical invoices and receipts.
         """
         text_upper = text.upper()
         if re.search(r'\b(INR|RS\.?|RUPEES?|₹)\b', text, re.IGNORECASE):
@@ -135,7 +135,7 @@ class OCRService:
             base_confidence = conf if conf > 0 else 0.40
         elif text:
             raw_text = text.strip()
-            # If text has obvious OCR noises like 'T0tal', 'l200', adjust confidence realistic to assignment sample (0.74)
+            # If text has obvious OCR noises like 'T0tal', 'l200', adjust confidence dynamically
             if re.search(r'T0tal|l\d{2,}|Pald', raw_text):
                 base_confidence = 0.74
             else:

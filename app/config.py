@@ -7,9 +7,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
 
 class Settings:
-    PROJECT_NAME: str = "Plum Medical Amount Detection Service"
+    PROJECT_NAME: str = "MediExtract AI - Medical Bill Amount Detection Service"
     VERSION: str = "1.0.0"
-    DESCRIPTION: str = "AI-Powered amount detection, OCR normalization, and context classification for medical bills."
+    DESCRIPTION: str = "Intelligent AI-powered financial amount extraction, OCR normalization, and context classification for medical bills."
     
     HOST: str = os.getenv("HOST", "0.0.0.0")
     PORT: int = int(os.getenv("PORT", 8000))

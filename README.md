@@ -1,28 +1,35 @@
-# Plum SDE Intern Assignment
-## Problem Statement 4: AI-Powered Amount Detection in Medical Documents
+# 🩺 MediExtract AI
+### Intelligent Financial Amount Extractor & Auditor for Medical Documents
 
-An enterprise-grade backend service that ingests medical bills and receipts (typed text or noisy scanned images), extracts financial figures, corrects OCR character-to-digit errors, classifies amounts by semantic context, provides audit provenance, and enforces safety guardrails.
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688.svg?logo=fastapi)](https://fastapi.tiangolo.com)
+[![Pydantic v2](https://img.shields.io/badge/Pydantic-v2.6+-E92063.svg?logo=pydantic)](https://docs.pydantic.dev)
+[![RapidOCR](https://img.shields.io/badge/OCR-RapidOCR--ONNX-orange.svg)](https://github.com/RapidAI/RapidOCR)
+[![Tests Passing](https://img.shields.io/badge/tests-13%20passed-brightgreen.svg)]()
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+**MediExtract AI** is a production-ready backend service designed to parse and audit complex financial data from medical bills, pharmacy receipts, and hospital invoices. It handles messy real-world documents—including crumpled receipts, mobile snapshots, and corrupted OCR character substitutions—converting them into structured, verified financial records with audit trails.
 
 ---
 
-## 🌟 Key Highlights & Engineering Features
+## 🌟 Key Highlights
 
-- **End-to-End 4-Step Pipeline**:
-  - **Step 1 - OCR / Text Extraction**: High-performance ONNX-based deep learning OCR (`RapidOCR`) combined with Pillow contrast and sharpness enhancements to handle crumpled, folded, or degraded medical receipts.
-  - **Step 2 - Numeric Normalization**: Specialized character-level confusion matrix repairing OCR digit artifacts (`l200` $\rightarrow$ `1200`, `25O` $\rightarrow$ `250`, `I500` $\rightarrow$ `1500`) while filtering out rates (`10%`) and non-monetary tokens.
+- **Robust 4-Stage Extraction Pipeline**:
+  - **Step 1 - OCR & Token Extraction**: Deep learning OCR powered by `RapidOCR` (ONNX runtime) combined with Pillow image contrast/sharpness enhancements to extract text from degraded receipts.
+  - **Step 2 - OCR Digit Correction & Normalization**: Custom confusion matrix repairing OCR misreads (`l200` $\rightarrow$ `1200`, `25O` $\rightarrow$ `250`, `I500` $\rightarrow$ `1500`) while discarding discount percentages and non-monetary integers.
   - **Step 3 - Context Classification**: Context-window analysis mapping numbers into financial roles (`total_bill`, `paid`, `due`, `discount`, `tax`).
-  - **Step 4 - Standardized Output & Audit Provenance**: Structured JSON adhering 100% to the assignment specification, with exact textual provenance (`source: "text: 'Total: INR 1200'"`) for insurance claim auditability.
+  - **Step 4 - Structured Output & Audit Provenance**: Clean JSON output linking every extracted number directly to its original text snippet (`source: "text: 'Total: INR 1200'"`).
 - **Enterprise Guardrails**:
-  - **Document Readability Check**: Returns `{"status":"no_amounts_found","reason":"document too noisy"}` when input is illegible or degraded.
-  - **Mathematical Reconciliation**: Validates financial balance (`Total == Paid + Due`) and alerts on discrepancies.
-- **Dual AI & Hybrid Execution Engine**:
+  - **Readability & Noise Filter**: Automatically detects degraded or illegible documents and exits safely with `{"status":"no_amounts_found","reason":"document too noisy"}`.
+  - **Mathematical Reconciliation**: Built-in verification check ensuring accounting balance (`Total == Paid + Due`) and flagging discrepancies.
+- **Dual AI & Hybrid Architecture**:
   - **Offline-First Deterministic Engine**: 100% functional out of the box with zero external API key requirements.
-  - **Gemini LLM Chaining**: Supports optional `GEMINI_API_KEY` for advanced semantic disambiguation and anti-hallucination verification.
-- **Interactive Visual Demo UI**: Embedded single-page web interface for testing sample bills, uploading images, and recording the demo walkthrough.
+  - **LLM Chaining**: Supports optional Gemini multimodal integration (`GEMINI_API_KEY`) for advanced semantic disambiguation and anti-hallucination validation.
+- **Interactive Visual Demo UI**: Embedded single-page web interface for testing sample bills, uploading images, and visualizing pipeline stages live.
 
 ---
 
-## 🏛️ Pipeline Architecture
+## 🏛️ System Architecture
 
 ```mermaid
 flowchart TD
@@ -52,7 +59,7 @@ flowchart TD
     end
 
     subgraph Step4["Step 4: Standardized Output & Provenance"]
-        F1["Assemble Final JSON (Schema Compliant)"]
+        F1["Assemble Structured JSON"]
         F2["Audit Provenance Source Mapping"]
         F3["Mathematical Reconciliation<br>(Total == Paid + Due)"]
     end
@@ -69,18 +76,14 @@ flowchart TD
 ## 📂 Project Structure
 
 ```
-Plum_Assignment/
 ├── app/
-│   ├── __init__.py
-│   ├── main.py                  # FastAPI app entrypoint, CORS & static mounting
+│   ├── main.py                  # FastAPI server entrypoint, CORS & static UI mounting
 │   ├── config.py                # Environment configuration (.env support)
-│   ├── schemas.py               # Pydantic V2 models for all 4 steps & guardrails
+│   ├── schemas.py               # Pydantic V2 models for requests, responses & guardrails
 │   ├── api/
-│   │   ├── __init__.py
 │   │   └── routes.py            # API routes: /process, /pipeline, /step1-4
 │   ├── services/
-│   │   ├── __init__.py
-│   │   ├── ocr_service.py       # RapidOCR engine, preprocessing & raw token extraction
+│   │   ├── ocr_service.py       # RapidOCR engine, preprocessing & token extraction
 │   │   ├── normalizer.py        # OCR character-to-digit confusion matrix repair
 │   │   ├── context_classifier.py # Sliding-window provenance & context labeling
 │   │   ├── ai_extractor.py      # Optional Gemini AI chaining & semantic extraction
@@ -100,7 +103,7 @@ Plum_Assignment/
 │   ├── sample_receipt_noisy.png
 │   └── sample_receipt_unreadable.png
 ├── postman/
-│   ├── Plum_Medical_Amount_Detection.postman_collection.json
+│   ├── MediExtract_Amount_Detection.postman_collection.json
 │   └── curl_examples.sh
 ├── requirements.txt             # Locked Python dependencies
 ├── run.py                       # One-click server launcher
@@ -110,94 +113,73 @@ Plum_Assignment/
 
 ---
 
-## 🚀 Setup & Installation Instructions
+## 🚀 Quickstart Guide
 
-### Prerequisites
-- Python 3.10 to 3.14
-- Git (optional, for version control)
+### 1. Prerequisites
+- Python 3.10+ (tested on Python 3.14)
+- Git
 
-### 1. Clone & Navigate
+### 2. Setup Virtual Environment & Install Dependencies
 ```bash
-git clone <repository-url>
-cd Plum_Assignment
-```
+# Clone the repository
+git clone https://github.com/RohithReddyMarri/Plum-Task4-Medical-Amount-Detection.git
+cd Plum-Task4-Medical-Amount-Detection
 
-### 2. Create and Activate Virtual Environment
-**On Windows (PowerShell):**
-```powershell
+# Create virtual environment
 python -m venv venv
+
+# Activate virtual environment
+# On Windows:
 .\venv\Scripts\Activate.ps1
-```
-
-**On Linux / macOS:**
-```bash
-python3 -m venv venv
+# On Linux / macOS:
 source venv/bin/activate
-```
 
-### 3. Install Dependencies
-```bash
+# Install dependencies
 pip install -r requirements.txt
 ```
 
-### 4. (Optional) Configure Environment Variables
-Copy `.env.example` to `.env`:
+### 3. (Optional) Configure Environment
 ```bash
 cp .env.example .env
 ```
-*Note: If `GEMINI_API_KEY` is not provided, the system runs seamlessly using the built-in deep-learning OCR and heuristic engine.*
+*Note: If `GEMINI_API_KEY` is not provided, the service operates seamlessly using the built-in local OCR and heuristic NLP engine.*
 
----
-
-## 💻 Running the Application
-
-### Start the Backend Server:
+### 4. Run the Application
 ```bash
 python run.py
 ```
-Or with Uvicorn directly:
+Or directly with Uvicorn:
 ```bash
 uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
 Once running:
 - **Interactive Web Demo**: [http://localhost:8000/](http://localhost:8000/)
-- **Swagger Interactive API Documentation**: [http://localhost:8000/docs](http://localhost:8000/docs)
-- **ReDoc API Documentation**: [http://localhost:8000/redoc](http://localhost:8000/redoc)
+- **Swagger API Documentation**: [http://localhost:8000/docs](http://localhost:8000/docs)
+- **ReDoc Documentation**: [http://localhost:8000/redoc](http://localhost:8000/redoc)
 
 ---
 
-## 🌐 Exposing via ngrok (Public Demo)
+## 🧪 Automated Testing
 
-As requested in the submission guidelines, to provide a live public link:
-```bash
-# In a separate terminal
-ngrok http 8000
-```
-This gives a public URL (e.g., `https://xxxx.ngrok-free.app`) accessible from anywhere.
-
----
-
-## 🧪 Running the Automated Test Suite
-
-Run the full suite of unit and integration tests:
+Run the full test suite with `pytest`:
 ```bash
 pytest -v
 ```
 
 All 13 test cases verify:
-1. Extraction of raw tokens and currency hints from typed text.
-2. Character-level OCR digit error repair (`l200` $\rightarrow$ `1200`, `25O` $\rightarrow$ `250`).
-3. Discarding rates/percentages (`10%`) during normalization.
-4. Surrounding context extraction and classification into `total_bill`, `paid`, `due`.
-5. Audit provenance string matching (`source: "text: '...'"`).
-6. Mathematical reconciliation guardrails (`Total == Paid + Due`).
-7. Guardrail triggering for unreadable / degraded noisy documents.
-8. File upload handling and image OCR processing.
+- Raw token extraction and currency inference from typed text.
+- Character-level OCR digit error repair (`l200` $\rightarrow$ `1200`, `25O` $\rightarrow$ `250`).
+- Discarding discount percentages (`10%`) during normalization.
+- Context classification into `total_bill`, `paid`, `due`.
+- Exact audit provenance strings (`source: "text: '...'"`).
+- Mathematical reconciliation guardrails (`Total == Paid + Due`).
+- Guardrail triggering for unreadable / degraded noisy documents.
+- Multipart file upload handling and OCR image processing.
 
 ---
 
-## 📡 API Usage & Sample Requests
+## 📡 API Usage & Examples
 
 ### 1. Standard Bill Request (Step 4 Schema)
 ```bash
@@ -205,7 +187,7 @@ curl -X POST "http://localhost:8000/api/process" \
      -H "Content-Type: application/json" \
      -d '{"text": "Total: INR 1200 | Paid: 1000 | Due: 200 | Discount: 10%"}'
 ```
-**Expected Response:**
+**Response:**
 ```json
 {
   "currency": "INR",
@@ -296,7 +278,7 @@ curl -X POST "http://localhost:8000/api/process" \
 
 ---
 
-### 5. Detailed 4-Step Pipeline Trace
+### 5. Full Pipeline Trace
 ```bash
 curl -X POST "http://localhost:8000/api/pipeline" \
      -H "Content-Type: application/json" \
@@ -306,11 +288,5 @@ Returns a comprehensive breakdown of all intermediate steps (`step1_ocr`, `step2
 
 ---
 
-## 🎥 Screen Recording Demo Guide
-
-For the required screen recording:
-1. Open the interactive demo UI at `http://localhost:8000/`.
-2. Demonstrate **Sample 1 (Standard)**: Show the pipeline extracting tokens, normalizing, and producing the Step 4 final JSON with math verification.
-3. Demonstrate **Sample 2 (Noisy OCR)**: Highlight how `T0tal: Rs l200` is corrected to `1200` and labeled as `total_bill`.
-4. Demonstrate **Sample 4 (Guardrail Trigger)**: Show how blurry or noisy input safely triggers the `no_amounts_found` exit condition.
-5. (Optional) Switch to Swagger UI at `http://localhost:8000/docs` to show API endpoint documentation and direct testing.
+## 📄 License
+This project is open-source and available under the [MIT License](LICENSE).

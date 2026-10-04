@@ -50,7 +50,7 @@ async def _extract_input(request: Request) -> tuple[Optional[str], Optional[byte
 @router.post("/process", response_model=Union[Step4Response, GuardrailExitResponse], summary="Process Medical Document (Final Output)")
 async def process_document(request: Request):
     """
-    Primary endpoint for Problem Statement 4:
+    Primary processing endpoint:
     Accepts typed text (JSON body or form data) or image file upload.
     Executes the 4-step pipeline and returns the final standardized JSON (Step 4) or Guardrail exit.
     """

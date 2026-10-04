@@ -1,8 +1,8 @@
 {
   "info": {
-    "name": "Plum SDE Intern - Medical Amount Detection API",
-    "_postman_id": "plum-medical-amount-detection",
-    "description": "API collection for Problem Statement 4: AI-Powered Amount Detection in Medical Documents.",
+    "name": "MediExtract AI - Medical Amount Detection API",
+    "_postman_id": "mediextract-amount-detection",
+    "description": "API collection for MediExtract AI: Intelligent Amount Detection in Medical Documents.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [

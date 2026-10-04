@@ -49,7 +49,7 @@ class FinalAmountItem(BaseModel):
 
 
 class Step4Response(BaseModel):
-    """Step 4 output: Standardized final JSON adhering precisely to assignment specifications."""
+    """Step 4 output: Standardized final JSON with provenance and mathematical reconciliation."""
     currency: str = Field(default="INR", examples=["INR"])
     amounts: List[FinalAmountItem] = Field(...)
     status: str = Field(default="ok", examples=["ok"])

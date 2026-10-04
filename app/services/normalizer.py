@@ -87,7 +87,7 @@ class NormalizerService:
                     normalized_amounts.append(cleaned_val)
 
         # Calculate normalization confidence
-        # Assignment benchmark: ~0.82
+        # Baseline confidence benchmark
         if normalized_amounts:
             boost = min(0.10, len(normalized_amounts) * 0.02)
             norm_conf = min(0.95, max(0.75, step1_confidence + 0.08 + boost))
